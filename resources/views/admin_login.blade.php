@@ -45,10 +45,24 @@
 						<a href="index.html"><i class="halflings-icon home"></i></a>
 						<a href="#"><i class="halflings-icon cog"></i></a>
 					</div>
+
+					<p class="alert-danger">
+						<?php
+						$messege=Session::get('messege');
+							if ($messege) {
+								echo "$messege";
+								Session::put('messege',null);
+							}
+						?>
+					
+					</p>
+
+
 					<h2>Login to your account</h2>
-					<form class="form-horizontal" action="" method="post">
+					<form class="form-horizontal" action="{{url('/admin-dashboard')}}" method="post">
+						
+						{{csrf_field()}}
 						<fieldset>
-							
 							<div class="input-prepend" title="Username">
 								<span class="add-on"><i class="halflings-icon user"></i></span>
 								<input class="input-large span10" name="admin_email" id="username" type="text" placeholder="type email address"/>
