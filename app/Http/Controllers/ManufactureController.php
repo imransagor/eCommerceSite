@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Session;
 use Illuminate\support\Facades\Redirect;
 session_start();
+
 class ManufactureController extends Controller
 {
    public function index()
