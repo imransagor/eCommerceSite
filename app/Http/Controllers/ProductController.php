@@ -14,17 +14,23 @@ class ProductController extends Controller
 {
     public function index()
     {
+    	$this->AdminAuthCheck();
     	return view('admin.add_product');
     }
 
      public function all_product()
     {
-    	/*$all_product_info=DB::table('tbl_products')->get();
+    	$this->AdminAuthCheck();
+
+    	$all_product_info=DB::table('tbl_products')
+    					->join('tbl_category','tbl_products.category_id','=','tbl_category.category_id')
+    					->join('tbl_manufacture','tbl_products.manufacture_id','=','tbl_manufacture.manufacture_id')
+    					->get();
     	$manage_product=view('admin.all_product')
     		->with('all_product_info',$all_product_info);
 
     	return view('admin_layout')
-    		->with('admin.all_product',$manage_product);*/
+    		->with('admin.all_product',$manage_product);
 
     }
      public function save_product(Request $request)
@@ -60,4 +66,56 @@ class ProductController extends Controller
 
     	
     }
+
+    public function unactive_product($product_id)
+    {
+    	$this->AdminAuthCheck();
+    	
+    	DB::table('tbl_products')
+    		->where('product_id',$product_id)
+    		->update(['product_status'=>0]);
+
+    	Session::put('message','Product inactive successful!!');
+    	return Redirect::to('/all-product');
+
+    }
+
+    public function active_product($product_id)
+    {
+    	$this->AdminAuthCheck();
+    	
+    	DB::table('tbl_products')
+    		->where('product_id',$product_id)
+    		->update(['product_status'=>1]);
+    		Session::put('message','Product active successful!!');
+    	
+    	return Redirect::to('/all-product');
+
+    }
+
+  
+     public function delete_product($product_id)
+     {
+     	$this->AdminAuthCheck();
+
+     	DB::table('tbl_products')
+     		->where('product_id',$product_id)
+     		->delete();
+
+     		Session::get('message','Product deleted successful !');
+     		return Redirect::to('/all-product');
+
+
+     }
+    public function AdminAuthCheck()
+    {
+    	$admin_id=Session::get('admin_id');
+    	if ($admin_id) {
+    		return;
+    	}else{
+    		return Redirect::to('/admin')->send();
+    	}
+
+    }
+
 }
