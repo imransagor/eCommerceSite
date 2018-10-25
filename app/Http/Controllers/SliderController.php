@@ -19,6 +19,9 @@ class SliderController extends Controller
 
  public function all_slider()
    {
+
+   		 $this->AdminAuthCheck();
+   		 
    		$all_slider=DB::table('tbl_slider')->get();
     	$manage_slider=view('admin.all_slider')
     		->with('all_slider',$all_slider);
@@ -52,4 +55,55 @@ class SliderController extends Controller
 		return Redirect::to('/add-slider');
 
    }
+
+    public function unactive_slider($slider_id)
+    {
+    	 $this->AdminAuthCheck();
+
+    	DB::table('tbl_slider')
+    		->where('slider_id',$slider_id)
+    		->update(['publication_status'=>0]);
+    		Session::put('message','Slider inactive successful!!');
+    	
+    	return Redirect::to('/all-slider');
+
+    }
+
+    public function active_slider($slider_id)
+    {
+         $this->AdminAuthCheck();
+    	
+    	DB::table('tbl_slider')
+    		->where('slider_id',$slider_id)
+    		->update(['publication_status'=>1]);
+    		Session::put('message','Slider active successful!!');
+    	
+    	return Redirect::to('/all-slider');
+
+    }
+
+    public function delete_category($slider_id)
+     {
+        $this->AdminAuthCheck();
+
+     	DB::table('tbl_slider')
+     		->where('slider_id',$slider_id)
+     		->delete();
+
+     		Session::get('message','Slider deleted successful !');
+     		return Redirect::to('/all-slider');
+
+
+     }
+
+     public function AdminAuthCheck()
+    {
+        $admin_id=Session::get('admin_id');
+        if ($admin_id) {
+            return;
+        }else{
+            return Redirect::to('/admin')->send();
+        }
+
+    }
 }
